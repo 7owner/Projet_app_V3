@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\InterventionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: InterventionRepository::class)]
 class Intervention
@@ -36,6 +38,14 @@ class Intervention
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeInterface $dateFinTs = null;
+
+    #[ORM\OneToMany(mappedBy: 'intervention', targetEntity: Rendezvous::class)]
+    private Collection $rendezvouses;
+
+    public function __construct()
+    {
+        $this->rendezvouses = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -122,6 +132,36 @@ class Intervention
     public function setDateFinTs(\DateTimeInterface $dateFinTs): static
     {
         $this->dateFinTs = $dateFinTs;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rendezvous>|
+     */
+    public function getRendezvouses(): Collection
+    {
+        return $this->rendezvouses;
+    }
+
+    public function addRendezvous(Rendezvous $rendezvous): static
+    {
+        if (!$this->rendezvouses->contains($rendezvous)) {
+            $this->rendezvouses->add($rendezvous);
+            $rendezvous->setIntervention($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRendezvous(Rendezvous $rendezvous): static
+    {
+        if ($this->rendezvouses->removeElement($rendezvous)) {
+            // set the owning side to null (unless already changed)
+            if ($rendezvous->getIntervention() === $this) {
+                $rendezvous->setIntervention(null);
+            }
+        }
 
         return $this;
     }

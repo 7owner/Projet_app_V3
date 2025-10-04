@@ -21,38 +21,17 @@
         </div>
 
         <div class="card-body p-4">
-            <!-- 🔎 Filtres -->
-            <form method="get" class="row g-3 mb-4">
-                <div class="col-md-4">
-                    <label class="form-label"><i class="fas fa-cogs me-1 text-secondary"></i> Maintenance</label>
-                    <input type="text" name="maintenance" value="{{ app.request.get('maintenance') }}" class="form-control" placeholder="Titre de la maintenance...">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label"><i class="fas fa-calendar-plus me-1 text-secondary"></i> Date début</label>
-                    <input type="date" name="dateDebut" value="{{ app.request.get('dateDebut') }}" class="form-control">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label"><i class="fas fa-calendar-check me-1 text-secondary"></i> Date fin</label>
-                    <input type="date" name="dateFin" value="{{ app.request.get('dateFin') }}" class="form-control">
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-success w-100">
-                        <i class="fas fa-filter"></i> Filtrer
-                    </button>
-                </div>
-            </form>
-
             {% if interventions is not empty %}
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead class="table-light">
                             <tr>
-                                <th>ID</th>
-                                <th>Maintenance</th>
-                                <th>Description</th>
-                                <th>Début</th>
-                                <th>Fin</th>
-                                <th class="text-center">Actions</th>
+                                <th><i class="fas fa-hashtag text-secondary me-1"></i> ID</th>
+                                <th><i class="fas fa-cogs text-secondary me-1"></i> Maintenance</th>
+                                <th><i class="fas fa-align-left text-secondary me-1"></i> Description</th>
+                                <th><i class="fas fa-calendar-plus text-secondary me-1"></i> Début</th>
+                                <th><i class="fas fa-calendar-check text-secondary me-1"></i> Fin</th>
+                                <th class="text-center"><i class="fas fa-ellipsis-h text-secondary"></i> Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,12 +39,25 @@
                                 <tr>
                                     <td class="fw-bold text-primary">#{{ intervention.id }}</td>
                                     <td>
-                                        <span class="fw-semibold">{{ intervention.maintenance.titre }}</span><br>
+                                        <span class="fw-semibold">{{ intervention.maintenance.titre }}</span>
+                                        <br>
                                         <small class="text-muted">ID: {{ intervention.maintenance.id }}</small>
                                     </td>
                                     <td>{{ intervention.description }}</td>
-                                    <td>{{ intervention.dateDebut ? intervention.dateDebut|date('d/m/Y') : '-' }}</td>
-                                    <td>{{ intervention.dateFin ? intervention.dateFin|date('d/m/Y') : '-' }}</td>
+                                    <td>
+                                        {% if intervention.dateDebut %}
+                                            <span class="badge bg-info text-dark">{{ intervention.dateDebut|date('d/m/Y') }}</span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if intervention.dateFin %}
+                                            <span class="badge bg-success">{{ intervention.dateFin|date('d/m/Y') }}</span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
                                     <td class="text-center">
                                         <a href="{{ path('app_intervention_show', {'id': intervention.id}) }}" class="btn btn-sm btn-outline-info me-1">
                                             <i class="fas fa-eye"></i>
@@ -86,11 +78,17 @@
                     </table>
                 </div>
             {% else %}
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle"></i> Aucune intervention trouvée.
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <div>Aucune intervention trouvée.</div>
                 </div>
             {% endif %}
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}

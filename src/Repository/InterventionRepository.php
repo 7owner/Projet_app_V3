@@ -20,4 +20,30 @@ class InterventionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Intervention::class);
     }
+
+    /**
+     * @return Intervention[] Returns an array of Intervention objects
+     */
+    public function findByFilters($maintenance, $dateDebut, $dateFin): array
+    {
+        $qb = $this->createQueryBuilder('i');
+
+        if ($maintenance) {
+            $qb->innerJoin('i.maintenance', 'm')
+               ->andWhere('m.titre LIKE :maintenance')
+               ->setParameter('maintenance', '%' . $maintenance . '%');
+        }
+
+        if ($dateDebut) {
+            $qb->andWhere('i.dateDebut >= :dateDebut')
+               ->setParameter('dateDebut', $dateDebut);
+        }
+
+        if ($dateFin) {
+            $qb->andWhere('i.dateFin <= :dateFin')
+               ->setParameter('dateFin', $dateFin);
+        }
+
+        return $qb->orderBy('i.id', 'ASC')->getQuery()->getResult();
+    }
 }

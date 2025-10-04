@@ -303,7 +303,7 @@ CREATE TABLE rendu_intervention_image (
 -- ==========================================
 CREATE TABLE documents_repertoire (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  cible_type ENUM('Affaire','Agent','Agence','Adresse','Client','Site','RendezVous','DOE',
+  cible_type ENUM('Affaire','Agent','Agence','Adresse','Client','Site','Rendezvous','DOE',
                   'Maintenance','Intervention','RapportMaintenance','Achat','Facture',
                   'Reglement','Formation','Fonction') NOT NULL,
   cible_id BIGINT NOT NULL,

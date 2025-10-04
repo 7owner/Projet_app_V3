@@ -17,10 +17,19 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class InterventionController extends AbstractController
 {
     #[Route('/', name: 'app_intervention_index', methods: ['GET'])]
-    public function index(InterventionRepository $interventionRepository): Response
+    public function index(Request $request, InterventionRepository $interventionRepository): Response
     {
+        $maintenance = $request->query->get('maintenance');
+        $dateDebut = $request->query->get('dateDebut');
+        $dateFin = $request->query->get('dateFin');
+
+        $interventions = $interventionRepository->findByFilters($maintenance, $dateDebut, $dateFin);
+
         return $this->render('intervention/index.html.twig', [
-            'interventions' => $interventionRepository->findAll(),
+            'interventions' => $interventions,
+            'maintenance' => $maintenance,
+            'dateDebut' => $dateDebut,
+            'dateFin' => $dateFin,
         ]);
     }
 

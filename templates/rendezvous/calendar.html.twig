@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calendrier des Rendez-vous{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet" />
+    <style>
+        #calendar {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        }
+        .fc-event {
+            cursor: pointer;
+            border-radius: 6px;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .fc-toolbar-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .fc-day-today {
+            background-color: rgba(13, 110, 253, 0.1) !important;
+        }
+        @media(max-width: 768px) {
+            .fc-header-toolbar {
+                flex-direction: column;
+                gap: .5rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">
+            <i class="bi bi-calendar3 me-2 text-primary"></i> Calendrier des Rendez-vous
+        </h1>
+        <a href="{{ path('app_rendezvous_new') }}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Nouveau Rendez-vous
+        </a>
+    </div>
+
+    <div id='calendar'></div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                },
+                buttonText: {
+                    today: 'Aujourd\'hui',
+                    month: 'Mois',
+                    week: 'Semaine',
+                    day: 'Jour',
+                    list: 'Liste'
+                },
+                locale: 'fr',
+                events: {{ events|raw }},
+                eventDidMount: function(info) {
+                    // 🎨 Couleur selon statut
+                    if (info.event.extendedProps.statut) {
+                        let bg, bd;
+                        switch(info.event.extendedProps.statut) {
+                            case 'Planifie': bg = bd = '#0dcaf0'; break;
+                            case 'Confirme': bg = bd = '#0d6efd'; break;
+                            case 'Termine': bg = bd = '#198754'; break;
+                            case 'Annule':  bg = bd = '#dc3545'; break;
+                            default: bg = bd = '#6c757d';
+                        }
+                        info.el.style.backgroundColor = bg;
+                        info.el.style.borderColor = bd;
+                    }
+
+                    // 📝 Tooltip
+                    if (info.event.title || info.event.extendedProps.description) {
+                        new bootstrap.Tooltip(info.el, {
+                            title: '<strong>' + info.event.title + '</strong><br>' + (info.event.extendedProps.description ?? ''),
+                            placement: 'top',
+                            html: true,
+                            container: 'body'
+                        });
+                    }
+                },
+                eventClick: function(info) {
+                    info.jsEvent.preventDefault();
+                    if (info.event.url) {
+                        window.location.href = info.event.url;
+                    }
+                }
+            });
+            calendar.render();
+        });
+    </script>
+{% endblock %}

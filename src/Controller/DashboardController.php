@@ -42,14 +42,26 @@ final class DashboardController extends AbstractController
             $chartData[] = $data['count'];
         }
 
+        $chartData = [
+            'labels' => $chartLabels,
+            'datasets' => [
+                [
+                    'label' => 'Nombre de maintenances',
+                    'data' => $chartData,
+                    'backgroundColor' => 'rgba(108, 99, 255, 0.6)',
+                    'borderColor' => 'rgba(108, 99, 255, 1)',
+                    'borderWidth' => 1
+                ]
+            ]
+        ];
+
         return $this->render('dashboard/index.html.twig', [
             'activeMaintenances' => $activeMaintenances,
             'ongoingInterventions' => $ongoingInterventions,
             'activeAgents' => $activeAgents,
             'sitesUnderContract' => $sitesUnderContract,
             'urgentMaintenances' => $urgentMaintenances,
-            'monthlyMaintenanceLabels' => json_encode($chartLabels),
-            'monthlyMaintenanceData' => json_encode($chartData)
+            'chartData' => json_encode($chartData)
         ]);
     }
 }

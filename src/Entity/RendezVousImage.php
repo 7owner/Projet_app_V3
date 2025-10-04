@@ -2,22 +2,22 @@
 
 namespace App\Entity;
 
-use App\Repository\RendezVousImageRepository;
+use App\Repository\RendezvousImageRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: RendezVousImageRepository::class)]
+#[ORM\Entity(repositoryClass: RendezvousImageRepository::class)]
 #[ORM\Table(name: 'rendez_vous_image')]
 #[ORM\UniqueConstraint(name: 'rendez_vous_image_unique', columns: ['rendez_vous_id', 'image_id'])]
-class RendezVousImage
+class RendezvousImage
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: RendezVous::class)]
+    #[ORM\ManyToOne(targetEntity: Rendezvous::class)]
     #[ORM\JoinColumn(name: 'rendez_vous_id', referencedColumnName: 'id', nullable: false)]
-    private ?RendezVous $rendezVous = null;
+    private ?Rendezvous $rendezvous = null;
 
     #[ORM\ManyToOne(targetEntity: Images::class)]
     #[ORM\JoinColumn(name: 'image_id', referencedColumnName: 'id', nullable: false)]
@@ -28,14 +28,14 @@ class RendezVousImage
         return $this->id;
     }
 
-    public function getRendezVous(): ?RendezVous
+    public function getRendezvous(): ?Rendezvous
     {
-        return $this->rendezVous;
+        return $this->rendezvous;
     }
 
-    public function setRendezVous(?RendezVous $rendezVous): static
+    public function setRendezvous(?Rendezvous $rendezvous): static
     {
-        $this->rendezVous = $rendezVous;
+        $this->rendezvous = $rendezvous;
 
         return $this;
     }

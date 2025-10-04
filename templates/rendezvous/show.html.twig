@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du Rendez-vous #{{ rendezvou.id }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .text-wrap {
+            white-space: pre-wrap;  /* respect des retours à la ligne */
+            word-wrap: break-word; /* coupe les mots trop longs */
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-primary text-white rounded-top-4 d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">
+                <i class="fas fa-calendar-alt me-2"></i> Rendez-vous #{{ rendezvou.id }}
+            </h3>
+            <a href="{{ path('app_rendezvous_index') }}" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+
+        <div class="card-body p-4">
+            <table class="table table-borderless align-middle">
+                <tbody>
+                    <tr>
+                        <th style="width: 200px;">ID</th>
+                        <td class="fw-bold text-primary">#{{ rendezvou.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Titre</th>
+                        <td>{{ rendezvou.titre }}</td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td>
+                            {% if rendezvou.description %}
+                                <div class="text-wrap">{{ rendezvou.description }}</div>
+                            {% else %}
+                                <span class="text-muted">Aucune description</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Date de début</th>
+                        <td>
+                            {% if rendezvou.dateDebut %}
+                                <span class="badge bg-info text-dark">
+                                    <i class="fas fa-calendar-plus me-1"></i>
+                                    {{ rendezvou.dateDebut|date('d/m/Y H:i') }}
+                                </span>
+                            {% else %}
+                                <span class="text-muted">Non définie</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Date de fin</th>
+                        <td>
+                            {% if rendezvou.dateFin %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-calendar-check me-1"></i>
+                                    {{ rendezvou.dateFin|date('d/m/Y H:i') }}
+                                </span>
+                            {% else %}
+                                <span class="text-muted">Non définie</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Statut</th>
+                        <td>
+                            {% set badge_class = 'bg-secondary' %}
+                            {% if rendezvou.statut == 'Planifie' %}
+                                {% set badge_class = 'bg-info text-dark' %}
+                            {% elseif rendezvou.statut == 'Confirme' %}
+                                {% set badge_class = 'bg-primary' %}
+                            {% elseif rendezvou.statut == 'Termine' %}
+                                {% set badge_class = 'bg-success' %}
+                            {% elseif rendezvou.statut == 'Annule' %}
+                                {% set badge_class = 'bg-danger' %}
+                            {% endif %}
+                            <span class="badge {{ badge_class }} px-3 py-2">
+                                {{ rendezvou.statut }}
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Boutons -->
+            <div class="d-flex justify-content-end mt-4">
+                <a href="{{ path('app_rendezvous_edit', {'id': rendezvou.id}) }}" class="btn btn-warning me-2">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
