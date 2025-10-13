@@ -20,8 +20,8 @@ use App\Entity\Intervention;
 use App\Entity\Maintenance;
 use App\Entity\Passeport;
 use App\Entity\RapportMaintenance;
-use App\Entity\RendezVous;
-use App\Entity\RendezVousImage;
+use App\Entity\Rendezvous;
+use App\Entity\RendezvousImage;
 use App\Entity\RenduIntervention;
 use App\Entity\RenduInterventionImage;
 use App\Entity\Site;
@@ -116,7 +116,7 @@ class PopulateDatabaseCommand extends Command
         $users = [];
         for ($i = 0; $i < 15; $i++) {
             $user = new User();
-            $user->setUsername($faker->unique()->userName);
+            $user->setEmail($faker->unique()->email);
             $user->setPassword($this->passwordHasher->hashPassword($user, 'password'));
             $user->setRoles(['ROLE_USER']);
             $this->entityManager->persist($user);
@@ -124,7 +124,7 @@ class PopulateDatabaseCommand extends Command
         }
         // Add an admin user
         $adminUser = new User();
-        $adminUser->setUsername('admin');
+        $adminUser->setEmail('admin@example.com');
         $adminUser->setPassword($this->passwordHasher->hashPassword($adminUser, 'admin'));
         $adminUser->setRoles(['ROLE_ADMIN']);
         $this->entityManager->persist($adminUser);
@@ -460,30 +460,31 @@ class PopulateDatabaseCommand extends Command
         $this->entityManager->flush();
         $io->success(count($interventions) . ' Interventions created.');
 
-        // 18. RendezVous
-        $io->section('Creating RendezVous...');
-        $rendezVousList = [];
+        // 18. Rendezvous
+        $io->section('Creating Rendezvous...');
+        $rendezvousList = [];
         foreach ($interventions as $intervention) {
             for ($i = 0; $i < $faker->numberBetween(1, 2); $i++) { // 1 to 2 rendez-vous per intervention
-                $rendezVous = new RendezVous();
-                $rendezVous->setSite($faker->randomElement($sites));
-                $rendezVous->setIntervention($intervention);
-                $rendezVous->setSujet($faker->randomElement(['maintenance', 'intervention']));
-                $rendezVous->setDateRdv($faker->dateTimeBetween('-6 months', '+6 months'));
-                $rendezVous->setHeureRdv($faker->dateTimeBetween('08:00', '18:00'));
-                $rendezVous->setDescription($faker->sentence);
-                $rendezVous->setStatut($faker->randomElement(['Planifie', 'Confirme', 'Termine', 'Annule']));
-                $rendezVous->setDateDebut($faker->dateTimeBetween('-1 year', 'now'));
-                $rendezVous->setDateFin($faker->dateTimeBetween('now', '+1 year'));
-                $this->entityManager->persist($rendezVous);
-                $rendezVousList[] = $rendezVous;
+                $rendezvous = new Rendezvous();
+                $rendezvous->setTitre($faker->sentence(3)); // Add this line
+                $rendezvous->setSite($faker->randomElement($sites));
+                $rendezvous->setIntervention($intervention);
+                $rendezvous->setSujet($faker->randomElement(['maintenance', 'intervention']));
+                $rendezvous->setDateRdv($faker->dateTimeBetween('-6 months', '+6 months'));
+                $rendezvous->setHeureRdv($faker->dateTimeBetween('08:00', '18:00'));
+                $rendezvous->setDescription($faker->sentence);
+                $rendezvous->setStatut($faker->randomElement(['Planifie', 'Confirme', 'Termine', 'Annule']));
+                $rendezvous->setDateDebut($faker->dateTimeBetween('-1 year', 'now'));
+                $rendezvous->setDateFin($faker->dateTimeBetween('now', '+1 year'));
+                $this->entityManager->persist($rendezvous);
+                $rendezvousList[] = $rendezvous;
             }
         }
-        $io->progressStart(count($rendezVousList));
-        foreach ($rendezVousList as $rendezVous) { $io->progressAdvance(); }
+        $io->progressStart(count($rendezvousList));
+        foreach ($rendezvousList as $rendezvous) { $io->progressAdvance(); }
         $io->progressFinish();
         $this->entityManager->flush();
-        $io->success(count($rendezVousList) . ' RendezVous created.');
+        $io->success(count($rendezvousList) . ' Rendezvous created.');
 
         // 19. RapportMaintenance
         $io->section('Creating RapportMaintenance...');
@@ -556,23 +557,23 @@ class PopulateDatabaseCommand extends Command
         $this->entityManager->flush();
         $io->success(count($images) . ' Images created.');
 
-        // 22. RendezVousImage
-        $io->section('Creating RendezVousImage...');
-        $rendezVousImages = [];
-        foreach ($rendezVousList as $rendezVous) {
+        // 22. RendezvousImage
+        $io->section('Creating RendezvousImage...');
+        $rendezvousImages = [];
+        foreach ($rendezvousList as $rendezvous) {
             if (!empty($images) && $faker->boolean(50)) { // 50% chance to link an image
-                $rendezVousImage = new RendezVousImage();
-                $rendezVousImage->setRendezVous($rendezVous);
-                $rendezVousImage->setImage($faker->randomElement($images));
-                $this->entityManager->persist($rendezVousImage);
-                $rendezVousImages[] = $rendezVousImage;
+                $rendezvousImage = new RendezvousImage();
+                $rendezvousImage->setRendezvous($rendezvous);
+                $rendezvousImage->setImage($faker->randomElement($images));
+                $this->entityManager->persist($rendezvousImage);
+                $rendezvousImages[] = $rendezvousImage;
             }
         }
-        $io->progressStart(count($rendezVousImages));
-        foreach ($rendezVousImages as $rendezVousImage) { $io->progressAdvance(); }
+        $io->progressStart(count($rendezvousImages));
+        foreach ($rendezvousImages as $rendezvousImage) { $io->progressAdvance(); }
         $io->progressFinish();
         $this->entityManager->flush();
-        $io->success(count($rendezVousImages) . ' RendezVousImage created.');
+        $io->success(count($rendezvousImages) . ' RendezvousImage created.');
 
         // 23. RenduIntervention
         $io->section('Creating RenduIntervention...');
@@ -617,7 +618,7 @@ class PopulateDatabaseCommand extends Command
         $io->section('Creating DocumentsRepertoire...');
         $documentsRepertoireList = [];
         $cibleTypes = [
-            'Affaire', 'Agent', 'Agence', 'Adresse', 'Client', 'Site', 'RendezVous', 'DOE',
+            'Affaire', 'Agent', 'Agence', 'Adresse', 'Client', 'Site', 'Rendezvous', 'DOE',
             'Maintenance', 'Intervention', 'RapportMaintenance', 'Formation', 'Fonction'
         ];
         $allCibles = [
@@ -627,7 +628,7 @@ class PopulateDatabaseCommand extends Command
             'Adresse' => $adresses,
             'Client' => $clients,
             'Site' => $sites,
-            'RendezVous' => $rendezVousList,
+            'Rendezvous' => $rendezvousList,
             'DOE' => $does,
             'Maintenance' => $maintenances,
             'Intervention' => $interventions,
@@ -693,8 +694,8 @@ class PopulateDatabaseCommand extends Command
             Adresse::class, Agence::class, User::class, Agent::class, Passeport::class, Equipe::class,
             AgenceMembre::class, AgentEquipe::class, Fonction::class, AgentFonction::class, Client::class,
             Affaire::class, Site::class, SiteAffaire::class, Doe::class, Maintenance::class,
-            Intervention::class, RendezVous::class, RapportMaintenance::class, Formation::class, Images::class,
-            RendezVousImage::class, RenduIntervention::class, RenduInterventionImage::class, DocumentsRepertoire::class,
+            Intervention::class, Rendezvous::class, RapportMaintenance::class, Formation::class, Images::class,
+            RendezvousImage::class, RenduIntervention::class, RenduInterventionImage::class, DocumentsRepertoire::class,
         ];
 
         foreach ($entities as $entityClass) {

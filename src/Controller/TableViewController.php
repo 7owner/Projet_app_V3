@@ -27,7 +27,7 @@ final class TableViewController extends AbstractController
             'Adresse', 'Affaire', 'Agence', 'AgenceMembre', 'Agent', 'AgentEquipe',
             'AgentFonction', 'Client', 'DocumentsRepertoire', 'Doe', 'Equipe',
             'Fonction', 'Formation', 'Images', 'Intervention', 'Maintenance',
-            'Passeport', 'RapportMaintenance', 'RendezVous', 'RendezVousImage',
+            'Passeport', 'RapportMaintenance', 'Rendezvous', 'RendezvousImage',
             'RenduIntervention', 'RenduInterventionImage', 'Site', 'SiteAffaire',
             'User', // User entity is kept
             // Add other entities as they are created
@@ -255,7 +255,7 @@ final class TableViewController extends AbstractController
             'Adresse', 'Affaire', 'Agence', 'AgenceMembre', 'Agent', 'AgentEquipe',
             'AgentFonction', 'Client', 'DocumentsRepertoire', 'Doe', 'Equipe',
             'Fonction', 'Formation', 'Images', 'Intervention', 'Maintenance',
-            'Passeport', 'RapportMaintenance', 'RendezVous', 'RendezVousImage',
+            'Passeport', 'RapportMaintenance', 'Rendezvous', 'RendezvousImage',
             'RenduIntervention', 'RenduInterventionImage', 'Site', 'SiteAffaire',
             'User',
         ];

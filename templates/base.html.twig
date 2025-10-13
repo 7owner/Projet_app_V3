@@ -292,6 +292,8 @@
                 <a href="{{ path('app_dashboard') }}" {% if app.request.attributes.get('_route') == 'app_dashboard' %}class="active"{% endif %}>Tableau de bord</a>
                 <a href="{{ path('app_agent_index') }}" {% if app.request.attributes.get('_route') == 'app_agent_index' %}class="active"{% endif %}>Gestion des Agents</a>
                 <a href="{{ path('app_intervention_index') }}" {% if app.request.attributes.get('_route') == 'app_intervention_index' %}class="active"{% endif %}>Planning Interventions</a>
+                <a href="{{ path('app_rendezvous_index') }}" {% if 'app_rendezvous' in app.request.attributes.get('_route') %}class="active"{% endif %}>Rendez-vous</a>
+                <a href="{{ path('app_rendezvous_calendar') }}" {% if app.request.attributes.get('_route') == 'app_rendezvous_calendar' %}class="active"{% endif %}>Calendrier</a>
             </nav>
         </header>
         {% block body %}{% endblock %}

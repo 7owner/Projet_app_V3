@@ -1,0 +1,29 @@
+L’erreur “linear is not a registered scale” provient de Chart.js v3+ : il faut désormais inscrire explicitement chaque type de composant utilisé (scales, éléments, contrôleurs...). De même, l’erreur “glob is not a function” dans bootstrap-JS pointe vers une incompatibilité d’import ou d’utilisation du package glob.
+
+Correction Chart.js ("linear is not a registered scale")
+Pour résoudre cette erreur, il faut importer puis enregistrer manuellement la scale Linear :
+
+js
+import { Chart, LinearScale, CategoryScale, BarElement, LineElement, PointElement } from 'chart.js';
+// Ajoutez tous les éléments/scales utilisés dans vos graphiques
+Chart.register(LinearScale, CategoryScale, BarElement, LineElement, PointElement);
+Veillez à enregistrer chaque composant nécessaire avant d'instancier un nouveau graphique. Référez-vous à la documentation ou à l’API Chart.js pour ajuster selon les types de graphiques utilisés (LineController, BarController...).
+
+Correction Bootstrap/JS ("glob is not a function")
+Ce message indique souvent que :
+
+Soit le package glob est importé ainsi import glob from 'glob', alors que depuis glob v9+ il faut plutôt :
+
+js
+import { glob } from "glob";
+Soit vous utilisez une ancienne version du code avec une version trop récente du paquet, ou inversement.
+
+Résumé rapide
+Pour Chart.js, enregistrez les scales et éléments explicitement :
+
+js
+Chart.register(LinearScale);
+Pour glob, adaptez l'import selon la version, le plus sûr est d’utiliser { glob } = require('glob') ou import { glob } from "glob";.
+
+Après ces corrections, les erreurs de connexion de contrôleur ("Error connecting controller") et d'import glob disparaîtront en général sur une stack JS/Symfony moderne.
+

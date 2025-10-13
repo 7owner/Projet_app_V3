@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\RendezVousImage;
+use App\Entity\RendezvousImage;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<RendezVousImage>
+ * @extends ServiceEntityRepository<RendezvousImage>
  *
- * @method RendezVousImage|null find($id, $lockMode = null, $lockVersion = null)
- * @method RendezVousImage|null findOneBy(array $criteria, array $orderBy = null)
- * @method RendezVousImage[]    findAll()
- * @method RendezVousImage[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method RendezvousImage|null find($id, $lockMode = null, $lockVersion = null)
+ * @method RendezvousImage|null findOneBy(array $criteria, array $orderBy = null)
+ * @method RendezvousImage[]    findAll()
+ * @method RendezvousImage[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class RendezVousImageRepository extends ServiceEntityRepository
+class RendezvousImageRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, RendezVousImage::class);
+        parent::__construct($registry, RendezvousImage::class);
     }
 }
