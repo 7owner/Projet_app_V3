@@ -61,8 +61,43 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             <div class="lg:col-span-2 bg-white bg-opacity-90 backdrop-blur-lg p-6 rounded-xl shadow-lg">
                 <div class="text-lg font-semibold text-gray-800 mb-4">📊 Évolution des maintenances par mois</div>
-                <canvas id="monthlyMaintenanceChart" data-controller="chart" data-chart-labels-value="{{ monthlyMaintenanceLabels|raw }}" data-chart-data-value="{{ monthlyMaintenanceData|raw }}"></canvas>
+                <canvas id="monthlyMaintenanceChart"></canvas>
             </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const ctx = document.getElementById('monthlyMaintenanceChart');
+                    const chartData = JSON.parse('{{ chartData|raw }}');
+
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: chartData,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { position: "top" },
+                                title: { display: true, text: "Exemple de graphique" }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Nombre de maintenances'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Mois'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                });
+            </script>
 
             <div class="bg-white bg-opacity-90 backdrop-blur-lg p-6 rounded-xl shadow-lg">
                 <div class="text-lg font-semibold text-gray-800 mb-4">🚨 Maintenances urgentes</div>
