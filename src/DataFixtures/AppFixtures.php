@@ -289,6 +289,22 @@ class AppFixtures extends Fixture
             }
         }
 
+        // Create 10 Rendezvous
+        for ($i = 0; $i < 10; $i++) {
+            $rendezvous = new \App\Entity\Rendezvous();
+            $rendezvous->setTitre($faker->sentence(3));
+            $rendezvous->setDescription($faker->paragraph);
+            $rendezvous->setDateDebut($faker->dateTimeBetween('-1 month', '+1 month'));
+            $rendezvous->setDateFin($faker->dateTimeBetween($rendezvous->getDateDebut(), '+1 month'));
+            $rendezvous->setStatut($faker->randomElement(['Planifié', 'Terminé', 'Annulé']));
+            $rendezvous->setSujet($faker->sentence(2));
+            $rendezvous->setDateRdv($faker->dateTimeBetween('-1 month', '+1 month'));
+            $rendezvous->setHeureRdv($faker->dateTime());
+            $rendezvous->setIntervention($faker->randomElement($interventions));
+            $rendezvous->setSite($faker->randomElement($sites));
+            $manager->persist($rendezvous);
+        }
+
         // Create DocumentsRepertoire entries for each Doe and Maintenance
         foreach ($maintenances as $maintenance) {
             // Document for the Doe associated with this Maintenance

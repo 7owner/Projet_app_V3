@@ -4,12 +4,22 @@ doctrine:
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
-        #server_version: '16'
+        server_version: '17'
 
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true
         mapping_types:
             enum: string
+            mode_reglement: string
+            etat_rapport: string
+            statut_facture: string
+            statut_achat: string
+            role_agence: string
+            doc_cible_type: string
+            doc_nature: string
+            type_formation: string
+            sujet_type: string
+            statut_rdv: string
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true

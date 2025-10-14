@@ -68,7 +68,7 @@
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     const ctx = document.getElementById('monthlyMaintenanceChart');
-                    const chartData = JSON.parse('{{ chartData|raw }}');
+                    const chartData = {{ chartData|raw }};
 
                     new Chart(ctx, {
                         type: 'bar',

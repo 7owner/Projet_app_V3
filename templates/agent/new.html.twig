@@ -21,6 +21,7 @@
         </div>
         <div class="card-body p-4">
             {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
+            {{ form_errors(form) }}
 
                 <div class="col-md-6">
                     {{ form_label(form.matricule, null, {'label_attr': {'class': 'form-label fw-semibold'}}) }}
@@ -82,10 +83,14 @@
                     {{ form_errors(form.agence) }}
                 </div>
 
-                <div class="col-md-6">
-                    {{ form_label(form.agentFonctions, null, {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                    {{ form_widget(form.agentFonctions, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.agentFonctions) }}
+                <div class="col-12">
+                    <h4 class="mt-4">Fonctions</h4>
+                    <ul id="agent-fonctions-list" class="list-group" data-prototype="{{ form_widget(form.agentFonctions.vars.prototype)|e('html_attr') }}">
+                        {% for fonctionForm in form.agentFonctions %}
+                            <li class="list-group-item">{{ form_row(fonctionForm) }}</li>
+                        {% endfor %}
+                    </ul>
+                    <button type="button" id="add-agent-fonction" class="btn btn-secondary btn-sm mt-2">Ajouter une fonction</button>
                 </div>
 
                 <div class="col-12 d-flex justify-content-between mt-4">
@@ -106,4 +111,21 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addFonctionButton = document.getElementById('add-agent-fonction');
+            const fonctionsList = document.getElementById('agent-fonctions-list');
+            let fonctionCounter = fonctionsList.children.length;
+
+            addFonctionButton.addEventListener('click', function() {
+                const prototype = fonctionsList.dataset.prototype;
+                const newForm = prototype.replace(/__name__/g, fonctionCounter);
+                fonctionCounter++;
+                const newLi = document.createElement('li');
+                newLi.className = 'list-group-item';
+                newLi.innerHTML = newForm;
+                fonctionsList.appendChild(newLi);
+            });
+        });
+    </script>
 {% endblock %}

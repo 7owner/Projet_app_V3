@@ -6,6 +6,7 @@ use App\Repository\AgentRepository;
 use App\Repository\InterventionRepository;
 use App\Repository\MaintenanceRepository;
 use App\Repository\SiteRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,7 +20,8 @@ final class DashboardController extends AbstractController
         MaintenanceRepository $maintenanceRepository,
         InterventionRepository $interventionRepository,
         AgentRepository $agentRepository,
-        SiteRepository $siteRepository
+        SiteRepository $siteRepository,
+        EntityManagerInterface $entityManager
     ): Response {
         $activeMaintenances = $maintenanceRepository->count(['etat' => 'En_cours']);
         $ongoingInterventions = $interventionRepository->count([]); // Assuming all are ongoing for now
@@ -28,12 +30,12 @@ final class DashboardController extends AbstractController
         $urgentMaintenances = $maintenanceRepository->findBy(['etat' => 'Bloque']);
 
         // Fetch monthly maintenance data for the chart
-        $monthlyMaintenanceData = $maintenanceRepository->createQueryBuilder('m')
-            ->select('SUBSTRING(m.dateDebut, 1, 7) as month', 'COUNT(m.id) as count')
-            ->groupBy('month')
-            ->orderBy('month', 'ASC')
-            ->getQuery()
-            ->getResult();
+        $rsm = new \Doctrine\ORM\Query\ResultSetMapping();
+        $rsm->addScalarResult('month', 'month');
+        $rsm->addScalarResult('count', 'count');
+        $sql = "SELECT TO_CHAR(date_debut, 'YYYY-MM') as month, COUNT(id) as count FROM maintenance GROUP BY month ORDER BY month ASC";
+        $query = $entityManager->createNativeQuery($sql, $rsm);
+        $monthlyMaintenanceData = $query->getResult();
 
         $chartLabels = [];
         $chartData = [];

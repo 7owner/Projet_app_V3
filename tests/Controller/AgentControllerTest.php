@@ -46,7 +46,7 @@ class AgentControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/agent/new');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('.container h1', 'Créer un nouvel agent');
+        $this->assertSelectorTextContains('.container h3', 'Créer un nouvel agent');
 
                 $email = 'john.doe' . uniqid() . '@example.com';
                 $form = $crawler->selectButton('Enregistrer')->form([
